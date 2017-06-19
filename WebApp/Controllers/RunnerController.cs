@@ -42,19 +42,8 @@ namespace WebApp.Controllers
             }
         }
 
-        private void PopulateDropDownList(object selectedGame = null)
-        {
-            var context = new GameReviewRunningContext();
-
-            var gameQuery = from g in context.Games
-                            orderby g.Title
-                            select g;
-            ViewBag.GameId = new SelectList(gameQuery.AsNoTracking(), "");
-        }
-
         public IActionResult CreateRunner()
         {
-            PopulateDropDownList();
             return View();
         }
 
@@ -70,7 +59,6 @@ namespace WebApp.Controllers
                     await context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
-                //PopulateDropDownList();
                 return View();
             }
         }
@@ -85,20 +73,20 @@ namespace WebApp.Controllers
             {
                 ViewBag.Games = context.Games.ToList();
 
-                var game = await context.Reviews.SingleOrDefaultAsync(g => g.Id == id);
+                var runner = await context.Runners.SingleOrDefaultAsync(g => g.Id == id);
 
-                if (game == null)
+                if (runner == null)
                 {
                     return NotFound();
                 }
-                return View(game);
+                return View(runner);
             }
             // return View(game);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRunner(int id, [Bind("RunnerName, Age, WorldRecords")]Runner runner)
+        public async Task<IActionResult> EditRunner(int id, [Bind("Id, RunnerName, Age, WorldRecords")]Runner runner)
         {
             if (id != runner.Id)
             {
@@ -127,8 +115,7 @@ namespace WebApp.Controllers
                     }
                     return RedirectToAction("Index");
                 }
-                //PopulateDropDownList();
-                return View();
+                return View(runner);
             }
         }
 

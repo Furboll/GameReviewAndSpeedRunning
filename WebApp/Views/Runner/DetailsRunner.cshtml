@@ -1,5 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Runner
+
 @{
+    ViewData["Title"] = "Details";
 }
+
+<h2>Details</h2>
+
+<div>
+    <h4>Runner</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RunnerName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RunnerName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Age)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Age)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WorldRecords)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WorldRecords)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GameRunner)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GameRunner)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="EditRunner" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
