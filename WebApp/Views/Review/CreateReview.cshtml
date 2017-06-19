@@ -1,0 +1,53 @@
+﻿@model Review
+
+@{
+    ViewBag.Title = "Create";
+    //ViewData["Title"] = "Create";
+}
+
+<form asp-action="CreateReview" method="post" class="form-horizontal" role="form">
+    <h4>Please fill in the information below to add a new game to our database.</h4>
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="ReviewerName" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="ReviewerName" class="form-control" />
+            <span asp-validation-for="ReviewerName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Grade" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Grade" class="form-control" />
+            <span asp-validation-for="Grade" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="GameId" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <select asp-for="GameId" asp-items="ViewBag.GameId" class="form-control">
+                <option value="">-- Select Game --</option>
+            </select>
+            <span asp-validation-for="Game" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <input type="submit" class="btn btn-primary" value="Add Review" />
+        </div>
+    </div>
+
+
+</form>

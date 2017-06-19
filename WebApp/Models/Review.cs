@@ -26,7 +26,7 @@ namespace WebApp.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        //public int GameId { get; set; }
+        public int GameId { get; set; }
         public Game Game { get; set; }
 
         //[Required]

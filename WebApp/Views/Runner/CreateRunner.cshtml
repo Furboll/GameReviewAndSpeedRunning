@@ -1,0 +1,36 @@
+﻿@model Runner
+
+<form asp-action="Runner" method="post" class="form-horizontal" role="form">
+
+    <h4>Please fill in the information below to add a new game to our database.</h4>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="RunnerName" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="RunnerName" class="form-control" />
+            <span asp-validation-for="RunnerName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Age" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Age" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="WorldRecords" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="WorldRecords" class="form-control" />
+            <span asp-validation-for="WorldRecords" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <input type="submit" class="btn btn-primary" value="Add Runner" />
+        </div>
+    </div>
+
+</form>

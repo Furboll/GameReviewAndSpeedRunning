@@ -1,0 +1,50 @@
+﻿@model Game
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form asp-action="CreateGame" method="post" class="form-horizontal" role="form">
+    <h4>Please fill in the information below to add a new game to our database.</h4>
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Title" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Developer" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Developer" class="form-control" />
+            <span asp-validation-for="Developer" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ReleaseDate" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="ReleaseDate" class="form-control" />
+            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="WorldRecord" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="WorldRecord" class="form-control" />
+            <span asp-validation-for="WorldRecord" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <input type="submit" class="btn btn-primary" value="Add Game" />
+        </div>
+    </div>
+
+
+</form>

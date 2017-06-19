@@ -14,14 +14,13 @@ namespace WebApp.Controllers
 {
     public class ReviewController : Controller
     {
+        private GameReviewRunningContext _context = new GameReviewRunningContext();
+
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
-            using (var context = new GameReviewRunningContext())
-            {
-                var model = await context.Reviews.AsNoTracking().ToListAsync();
-                return View(model);
-            }
+            var model = await _context.Reviews.Include(r => r.Game).AsNoTracking().ToListAsync();
+            return View(model);
         }
 
         public async Task<IActionResult> DetailsReview(int? id)
@@ -31,49 +30,33 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            using (var context = new GameReviewRunningContext())
+            var review = await _context.Reviews.Include(r=>r.Game).SingleOrDefaultAsync(m => m.Id == id);
+            if (review == null)
             {
-                var review = await context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
-                if (review == null)
-                {
-                    return NotFound();
-                }
-                return View(review);
+                return NotFound();
             }
+            return View(review);
+            
         }
 
         public IActionResult CreateReview()
         {
-                PopulateGamesDropDownList();
-                return View();
-        }
-
-        private void PopulateGamesDropDownList(object selectedGame = null)
-        {
-            var context = new GameReviewRunningContext();
-                        
-            var gameQuery = from g in context.Games
-                                 orderby g.Title
-                                 select g;
-            
-            ViewBag.GameId = new SelectList(gameQuery.AsNoTracking(), "Id", "Title", selectedGame);            
+            ViewData["GameId"] = new SelectList(_context.Games.ToList(), "Id", "Title");
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateReview([Bind("ReviewerName, Grade, Description")]Review review)
+        public async Task<IActionResult> CreateReview([Bind("ReviewerName, Grade, Description, GameId")]Review review)
         {
-            using (var context = new GameReviewRunningContext())
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    context.Reviews.Add(review);
-                    await context.SaveChangesAsync();
-                    return RedirectToAction("Index");
-                }
-                PopulateGamesDropDownList(review.Game);
-                
+                _context.Add(review);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
+            ViewData["GameId"] = new SelectList(_context.Games, "Id", "Title");
             return View(review);
         }
 
@@ -83,39 +66,32 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            using (var context = new GameReviewRunningContext())
+
+            var review = await _context.Reviews.SingleOrDefaultAsync(r => r.Id == id);
+            if (review == null)
             {
-                ViewBag.Games = context.Games.ToList();
-
-                var game = await context.Reviews.SingleOrDefaultAsync(g => g.Id == id);
-
-                if (game == null)
-                {
-                    return NotFound();
-                }
-                return View(game);
+                return NotFound();
             }
-            // return View(game);
+
+            ViewData["GameId"] = new SelectList(_context.Games, "Id", "Title");
+            return View(review);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditReview(int id, [Bind("Id,ReviewerName, Grade, Description, Game")] Review review)
+        public async Task<IActionResult> EditReview(int id, [Bind("Id, ReviewerName, Grade, Description, GameId")] Review review)
         {
             if (id != review.Id)
             {
                 return NotFound();
             }
 
-            using (var context = new GameReviewRunningContext())
-            {
-
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        context.Reviews.Update(review);
-                        await context.SaveChangesAsync();
+                        _context.Update(review);
+                        await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -128,10 +104,10 @@ namespace WebApp.Controllers
                             throw;
                         }
                     }
+                    ViewData["GameId"] = new SelectList(_context.Games, "Id", "Title");
                     return RedirectToAction("Index");
                 }
                 return View(review);
-            }
         }
 
         public async Task<IActionResult> DeleteReview(int? id)
@@ -141,29 +117,25 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            using (var context = new GameReviewRunningContext())
-            {
-                var review = await context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
+            var review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
 
-                if (review == null)
-                {
-                    return NotFound();
-                }
-                return View(review);
+            if (review == null)
+            {
+                return NotFound();
             }
+            return View(review);
+            
         }
 
         [HttpPost, ActionName("DeleteReview")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteGameConfirmed(int id)
+        public async Task<IActionResult> DeleteReviewConfirmed(int id)
         {
-            using (var context = new GameReviewRunningContext())
-            {
-                var review = await context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
-                context.Reviews.Remove(review);
-                await context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+            var review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+            
         }
 
         private bool ReviewExists(int id)
@@ -173,5 +145,16 @@ namespace WebApp.Controllers
                 return context.Reviews.Any(r => r.Id == id);
             }
         }
+
+        //private void PopulateGamesDropDownList(object selectedGame = null)
+        //{
+        //    var context = new GameReviewRunningContext();
+
+        //    var gameQuery = from g in context.Games
+        //                         orderby g.Title
+        //                         select g;
+
+        //    ViewBag.GameId = new SelectList(gameQuery.AsNoTracking(), "Id", "Title", selectedGame);            
+        //}
     }
 }
